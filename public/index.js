@@ -129,6 +129,26 @@ const actors = [{
   }]
 }];
 
+function searchTruck(truckerId) {
+  for (var i = 0; i < truckers.length; i++) {
+    if (truckers[i].id == truckerId) {
+      return truckers[i];
+    }
+  }
+  return false;
+}
+
+for (var i = 0; i < deliveries.length; i++)
+{
+  var trucker = searchTruck(deliveries[i].truckerId)
+  if (trucker) {
+    deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * trucker.pricePerVolume;
+  } 
+  else {
+    console.log(error);
+  }
+}
+
 console.log(truckers);
 console.log(deliveries);
 console.log(actors);
