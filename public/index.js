@@ -145,18 +145,21 @@ for (var i = 0; i < deliveries.length; i++) {
     if (deliveries[i].volume > 5) {
       if (deliveries[i].volume > 10) {
         if (deliveries[i].volume > 25) {
-          deliveries[i].price *= 0.5
+          deliveries[i].price *= 0.5;
         } else {
-          deliveries[i].price *= 0.7
+          deliveries[i].price *= 0.7;
         }
       } else {
-        deliveries[i].price *= 0.9
+        deliveries[i].price *= 0.9;
       }
-      deliveries[i].price = Math.round(deliveries[i].price * 100)/100
+      deliveries[i].price = Math.round(deliveries[i].price * 100)/100;
+      var commission = Math.round(deliveries[i].price * 30)/100;
+      deliveries[i].commission.convargo = commission/2
+      deliveries[i].commission.insurance = commission/2
     }
   }
   else {
-    console.log(error);
+    console.log('error');
   }
 }
 
