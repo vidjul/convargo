@@ -138,12 +138,23 @@ function searchTruck(truckerId) {
   return false;
 }
 
-for (var i = 0; i < deliveries.length; i++)
-{
+for (var i = 0; i < deliveries.length; i++) {
   var trucker = searchTruck(deliveries[i].truckerId)
   if (trucker) {
     deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * trucker.pricePerVolume;
-  } 
+    if (deliveries[i].volume > 5) {
+      if (deliveries[i].volume > 10) {
+        if (deliveries[i].volume > 25) {
+          deliveries[i].price *= 0.5
+        } else {
+          deliveries[i].price *= 0.7
+        }
+      } else {
+        deliveries[i].price *= 0.9
+      }
+      deliveries[i].price = Math.round(deliveries[i].price * 100)/100
+    }
+  }
   else {
     console.log(error);
   }
