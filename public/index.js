@@ -152,10 +152,13 @@ for (var i = 0; i < deliveries.length; i++) {
       } else {
         deliveries[i].price *= 0.9;
       }
+      if (deliveries[i].options.deductibleReduction) {
+        deliveries[i].price += deliveries[i].volume;
+      }
       deliveries[i].price = Math.round(deliveries[i].price * 100)/100;
       var commission = Math.round(deliveries[i].price * 30)/100;
-      deliveries[i].commission.convargo = commission/2
-      deliveries[i].commission.insurance = commission/2
+      deliveries[i].commission.convargo = commission/2;
+      deliveries[i].commission.insurance = commission/2;
     }
   }
   else {
