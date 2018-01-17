@@ -180,76 +180,82 @@ function searchDelivery(deliveryId) {
   return false;
 }
 
-for (var i = 0; i < deliveries.length; i++) {
-  var trucker = searchTruck(deliveries[i].truckerId)
-  if (trucker) {
+function computePrice() {
+  for (var i = 0; i < deliveries.length; i++) {
+    var trucker = searchTruck(deliveries[i].truckerId)
+    if (trucker) {
 
-    // Apply proper price reduction
-    var pricePerVolume = applyPricePerVolReduc(trucker, deliveries[i].volume);
+      // Apply proper price reduction
+      var pricePerVolume = applyPricePerVolReduc(trucker, deliveries[i].volume);
 
-    // Compute price
-    deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * pricePerVolume;
+      // Compute price
+      deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * pricePerVolume;
 
-    // Round the price value up to 2 decimals.
-    deliveries[i].price = Math.round(deliveries[i].price * 100) / 100;
+      // Round the price value up to 2 decimals.
+      deliveries[i].price = Math.round(deliveries[i].price * 100) / 100;
 
-    // Commmision computation
-    var commission = Math.round(deliveries[i].price * 30) / 100;
-    deliveries[i].commission.insurance = commission / 2;
-    commission = commission - commission / 2;
-    var tax = Math.trunc(deliveries[i].distance / 500) + 1;
-    commission = commission - tax;
-    deliveries[i].commission.treasury = tax;
-    deliveries[i].commission.convargo = commission;
+      // Commmision computation
+      var commission = Math.round(deliveries[i].price * 30) / 100;
+      deliveries[i].commission.insurance = commission / 2;
+      commission = commission - commission / 2;
+      var tax = Math.trunc(deliveries[i].distance / 500) + 1;
+      commission = commission - tax;
+      deliveries[i].commission.treasury = tax;
+      deliveries[i].commission.convargo = commission;
 
-    // Increase price for deductible option
-    if (deliveries[i].options.deductibleReduction) {
-      deliveries[i].price += deliveries[i].volume;
+      // Increase price for deductible option
+      if (deliveries[i].options.deductibleReduction) {
+        deliveries[i].price += deliveries[i].volume;
+      }
     }
-  }
-  else {
-    console.log('error');
+    else {
+      console.log('error');
+    }
   }
 }
 
 // Time to pay !
 
-for (var i = 0; i < actors.length; i++) {
-  var delivery = searchDelivery(actors[i].deliveryId);
-  if (delivery) {
-    for (var j = 0; j < actors[i].payment.length; j++) {
-      var optionPrice = 0;
-      if (delivery.options.deductibleReduction) {
-        optionPrice += delivery.volume;
-      }
-      switch (actors[i].payment[j].who) {
-        case 'shipper':
-          actors[i].payment[j].amount = delivery.price;
-        break;
-        case 'trucker':
-          var commission = 0
-          for (var key in delivery.commission)
-          {
-            commission += delivery.commission[key];
-          }
-          actors[i].payment[j].amount = delivery.price - commission - optionPrice;
-        break;
-        case 'insurance':
-          actors[i].payment[j].amount = delivery.commission.insurance;
-        break;
-        case 'convargo':
-          actors[i].payment[j].amount = delivery.commission.convargo + optionPrice;
-        break;
-        case 'treasury':
-          actors[i].payment[j].amount = delivery.commission.treasury;
-        break;
+function payEverybody() {
+  for (var i = 0; i < actors.length; i++) {
+    var delivery = searchDelivery(actors[i].deliveryId);
+    if (delivery) {
+      for (var j = 0; j < actors[i].payment.length; j++) {
+        var optionPrice = 0;
+        if (delivery.options.deductibleReduction) {
+          optionPrice += delivery.volume;
+        }
+        switch (actors[i].payment[j].who) {
+          case 'shipper':
+            actors[i].payment[j].amount = delivery.price;
+            break;
+          case 'trucker':
+            var commission = 0
+            for (var key in delivery.commission) {
+              commission += delivery.commission[key];
+            }
+            actors[i].payment[j].amount = delivery.price - commission - optionPrice;
+            break;
+          case 'insurance':
+            actors[i].payment[j].amount = delivery.commission.insurance;
+            break;
+          case 'convargo':
+            actors[i].payment[j].amount = delivery.commission.convargo + optionPrice;
+            break;
+          case 'treasury':
+            actors[i].payment[j].amount = delivery.commission.treasury;
+            break;
+        }
       }
     }
-  }
-  else {
-    console.log('error');
+    else {
+      console.log('error');
+    }
   }
 }
+
+computePrice();
+payEverybody();
 
 console.log(truckers);
 console.log(deliveries);
