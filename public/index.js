@@ -182,8 +182,9 @@ for (var i = 0; i < deliveries.length; i++) {
 
     // Compute deductible if needed
     console.log(deliveries[i].price);
+    var optionPrice = 0;    
     if (deliveries[i].options.deductibleReduction) {
-      deliveries[i].price += deliveries[i].volume;
+      optionPrice = deliveries[i].volume;
     }
     
     // Round the price value up to 2 decimals.
@@ -196,7 +197,7 @@ for (var i = 0; i < deliveries.length; i++) {
     var tax = Math.trunc(deliveries[i].distance/500);
     commission = commission - tax;
     deliveries[i].commission.treasury = tax;
-    deliveries[i].commission.convargo = commission;
+    deliveries[i].commission.convargo = commission + optionPrice;
   }
   else {
     console.log('error');
