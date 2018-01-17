@@ -1,3 +1,7 @@
+![dbz](./dbz.jpg) <!-- .element height="75%" width="75%" -->
+
+---
+
 2018 french startup
 
 ---
@@ -43,11 +47,11 @@ Focus on the price platform feature
 
 1. compute the ship price for the `shippers`
 2. compute the profit for the `truckers`
-3. compute the commission for `convargo`
+3. compute the commission `convargo`
 
 ---
 
-5 exercises
+5 steps
 
 ---
 
@@ -57,7 +61,7 @@ Focus on the price platform feature
 
 Euro-Volume
 
-Ex 1.
+Step 1.
 
 ---
 
@@ -72,7 +76,7 @@ shipping price = distance + volume
 
 Ship more, pay less
 
-Ex 2.
+Step 2.
 
 ---
 
@@ -86,7 +90,7 @@ Decreasing pricing
 
 Give me all your money
 
-Ex 3.
+Step 3.
 
 ---
 
@@ -94,13 +98,17 @@ Commission
 
 * 30% of the shipping price
 * insurance → half of commission
+
+---
+
+* the Treasury → 1€ by 500km
 * convargo → the rest
 
 ---
 
 The famous deductible
 
-Ex 4.
+Step 4.
 
 ---
 
@@ -112,7 +120,7 @@ The deductible
 
 Pay the actors
 
-Ex 5.
+Step 5.
 
 ---
 
