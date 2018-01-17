@@ -153,28 +153,50 @@ function searchTruck(truckerId) {
   return false;
 }
 
+function applyPricePerVolReduc(trucker,volume)
+{
+  var pricePerVolume = trucker.pricePerVolume;
+  if (volume > 5) {
+    if (volume > 10) {
+      if (volume > 25) {
+        pricePerVolume = trucker.pricePerVolume * 0.5;
+      } else {
+        pricePerVolume = trucker.pricePerVolume * 0.7;
+      }
+    } else {
+      pricePerVolume = trucker.pricePerVolume * 0.9;
+    }
+  }
+  return pricePerVolume
+}
+
 for (var i = 0; i < deliveries.length; i++) {
   var trucker = searchTruck(deliveries[i].truckerId)
   if (trucker) {
-    deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * trucker.pricePerVolume;
-    if (deliveries[i].volume > 5) {
-      if (deliveries[i].volume > 10) {
-        if (deliveries[i].volume > 25) {
-          deliveries[i].price *= 0.5;
-        } else {
-          deliveries[i].price *= 0.7;
-        }
-      } else {
-        deliveries[i].price *= 0.9;
-      }
-      if (deliveries[i].options.deductibleReduction) {
-        deliveries[i].price += deliveries[i].volume;
-      }
-      deliveries[i].price = Math.round(deliveries[i].price * 100)/100;
-      var commission = Math.round(deliveries[i].price * 30)/100;
-      deliveries[i].commission.convargo = commission/2;
-      deliveries[i].commission.insurance = commission/2;
+
+    // Apply proper price reduction
+    var pricePerVolume = applyPricePerVolReduc(trucker,deliveries[i].volume);
+
+    // Compute price
+    deliveries[i].price = deliveries[i].distance * trucker.pricePerKm + deliveries[i].volume * pricePerVolume;
+
+    // Compute deductible if needed
+    console.log(deliveries[i].price);
+    if (deliveries[i].options.deductibleReduction) {
+      deliveries[i].price += deliveries[i].volume;
     }
+    
+    // Round the price value up to 2 decimals.
+    deliveries[i].price = Math.round(deliveries[i].price * 100)/100;
+
+    // Commmision computation
+    var commission = Math.round(deliveries[i].price * 30)/100;
+    deliveries[i].commission.insurance = commission/2;
+    commission = commission - commission/2;
+    var tax = Math.trunc(deliveries[i].distance/500);
+    commission = commission - tax;
+    deliveries[i].commission.treasury = tax;
+    deliveries[i].commission.convargo = commission;
   }
   else {
     console.log('error');
